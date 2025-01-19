@@ -71,6 +71,17 @@ import {
   Github as GithubIcon,
 } from "@icon-park/vue-next";
 
+// 添加防抖函数
+function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
+  let timer: number | null = null;
+  return function (this: any, ...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
 type TabType = "html" | "css" | "javascript";
 type CodeType = Record<TabType, string>;
 
@@ -158,10 +169,10 @@ const getPreviewContent = () => {
   `;
 };
 
-const updatePreview = () => {
+const updatePreview = debounce(() => {
   if (!previewFrame.value) return;
   previewFrame.value.srcdoc = getPreviewContent();
-};
+}, 1000);
 
 const openInNewWindow = () => {
   const previewWindow = window.open("", "_blank");
