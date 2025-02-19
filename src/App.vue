@@ -129,7 +129,7 @@ const getInitialCode = () => {
   try {
     const hash = decodeURIComponent(window.location.hash.slice(1));
     if (hash) {
-      return JSON.parse(atob(hash));
+      return JSON.parse(decodeURIComponent(escape(atob(hash))));
     }
   } catch (e) {
     console.warn("Failed to parse code from URL");
@@ -183,7 +183,7 @@ const openInNewWindow = () => {
 };
 
 const shareCode = async () => {
-  const codeStr = btoa(JSON.stringify(code.value));
+  const codeStr = btoa(unescape(encodeURIComponent((JSON.stringify(code.value)))));
   const url = `${window.location.origin}${window.location.pathname}#${codeStr}`;
 
   try {
